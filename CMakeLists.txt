@@ -46,6 +46,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 target_link_libraries(${PROJECT_NAME} Boost::filesystem)
 target_link_libraries(demo ${PROJECT_NAME})
 
+file(COPY misc DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 if(BUILD_TESTS)
     add_executable(tests
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/File_test.cpp

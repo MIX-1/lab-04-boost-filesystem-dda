@@ -69,7 +69,7 @@ void File::set_accounts_unique(std::vector<string> accounts_name) {
 }
 void File::print_accounts_all(std::ostream& tab) {
   tab << "------------------ All financial files: ------------------------\n\n";
-  for(auto && account : accounts_all) {
+  for(auto & account : accounts_all) {
     if (account.get_correct_type()) account.print(tab);
   }
 }
@@ -105,18 +105,39 @@ Account::Account(const path& file) {
 }
 bool Account::is_correct_file(const path& in) {
   string in_str = in.stem().string();
-  string key_word = "balance";
-  const size_t len_balance = key_word.size();
-  const int position_key[2] = {7, 16};
-    if (in.extension() == ".txt"
+  size_t count_ = 0;
+  bool mask_type = false;
+  for (const auto& ch : in_str) {
+    if (ch == '_') {
+      ++count_;
+    }
+    switch (count_) {
+      case 0:
+        if (ch < 65 || ch > 90 || ch < 97 || ch > 122)
+          mask_type = false;
+        else
+          mask_type = true;
+        break;
+      case 1: case 2:
+        if (ch < 49 || ch > 57)
+          mask_type = false;
+        else
+          mask_type = true;
+        break;
+      default:
+        mask_type = false;
+    }
+  }
+  if (count_ != 2) {
+    mask_type = false;
+  }
+  if (in.extension() == ".txt"
       && in.stem().extension() != ".old"
-      && in_str[position_key[0]] == '_'
-      && in_str[position_key[1]] == '_'
-      && in_str.substr(0, len_balance) == key_word
-      && in_str.size() == 25)
-      return true;
-    else
-      return false;
+      && mask_type) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 string Account::cutter(const string& in) {

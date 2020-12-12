@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <utility>
 
 using path = boost::filesystem::path;
 using dir_iterator = boost::filesystem::directory_iterator;

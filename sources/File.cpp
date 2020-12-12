@@ -1,7 +1,6 @@
 // Copyright 2020 MIX-1 <danilonil1@yandex.ru>
 
 #include <File.hpp>
-#include <utility>
 
 File::File(const path& path_) {
   for (auto&& item : dir_iterator(path_))
@@ -18,7 +17,7 @@ void File::exit_test(const path& dir_path) {
           exit_test(item);
         }
       } else if (is_symlink(dir_path)) {
-        exit_test(dir_path);
+        exit_test(read_symlink(dir_path));
       } else {
         throw std::runtime_error("it is unidentified exists");
       }
@@ -53,18 +52,18 @@ void File::set_accounts_unique(std::vector<string> accounts_name) {
   }
   int temp_data = 0;
   string temp_broker;
-  for(size_t i = 0; i < accounts_unique.size(); ++i){
+  for(auto & account_unique : accounts_unique){
     for(auto & account : accounts_all){
-      if(account.get_account_name() == accounts_unique[i].get_account_name()){
+      if(account.get_account_name() == account_unique.get_account_name()){
         if(account.get_data() > temp_data) {
           temp_broker = account.get_broker_name();
           temp_data = account.get_data();
         }
       }
     }
-    accounts_unique[i].set_data(temp_data);
+    account_unique.set_data(temp_data);
     temp_data = 0;
-    accounts_unique[i].set_broker_name(temp_broker);
+    account_unique.set_broker_name(temp_broker);
     temp_broker = "";
   }
 }
